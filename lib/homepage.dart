@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:game_bird_app/barries.dart';
-import 'package:game_bird_app/bird.dart';
+import 'package:game_bird_app/game.dart';
+import 'package:just_audio/just_audio.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -115,126 +115,76 @@ class _HomepageState extends State<Homepage> {
         }
       });
 
+      if (birdYaxis > 0.95) {
+        player.setAsset('assets/mp3/game-over.mp3');
+        player.play();
+        timer.cancel();
+        dialogBox(context);
+      }
+
       if ((barrierXthree >= -0.3 && barrierXthree < 0.4) && birdYaxis > 0.43) {
+        player.setAsset('assets/mp3/game-over.mp3');
+        player.play();
         timer.cancel();
         dialogBox(context);
       }
       if ((barrierXfour >= -0.3 && barrierXfour < 0.4) && birdYaxis < -0.42) {
+        player.setAsset('assets/mp3/game-over.mp3');
+        player.play();
         timer.cancel();
         dialogBox(context);
       }
       if ((barrierXone >= -0.3 && barrierXone < 0.4) && birdYaxis > 0.43) {
+        player.setAsset('assets/mp3/game-over.mp3');
+        player.play();
         timer.cancel();
         dialogBox(context);
       }
       if ((barrierXtwo >= -0.3 && barrierXtwo < 0.4) && birdYaxis < -0.42) {
-        timer.cancel();
-        dialogBox(context);
-      }
-      if (birdYaxis > 0.95) {
+        player.setAsset('assets/mp3/game-over.mp3');
+        player.play();
         timer.cancel();
         dialogBox(context);
       }
     });
   }
 
+  late AudioPlayer player;
+  @override
+  void initState() {
+    super.initState();
+    player = AudioPlayer();
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (gameHasStarted) {
-          jump();
-        } else {
-          startGame();
-        }
-      },
-      child: Scaffold(
-        body: Column(children: [
-          Expanded(
-            flex: 2,
-            child: Stack(
-              children: [
-                AnimatedContainer(
-                  alignment: Alignment(0, birdYaxis),
-                  color: Colors.blue,
-                  duration: const Duration(milliseconds: 0),
-                  child: const MyBird(),
-                ),
-                Container(
-                  alignment: const Alignment(0, -0.3),
-                  child: gameHasStarted
-                      ? null
-                      : const Text(
-                          "T A P   T O   P L A Y",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 0),
-                  alignment: Alignment(barrierXone, 1.1),
-                  child: const MyBarrier(size: 200.0, color: Colors.pink),
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 0),
-                  alignment: Alignment(barrierXtwo, -1.1),
-                  child: const MyBarrier(size: 200.0, color: Colors.purple),
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 0),
-                  alignment: Alignment(barrierXthree, 1.1),
-                  child: const MyBarrier(size: 200.0, color: Colors.purple),
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 0),
-                  alignment: Alignment(barrierXfour, -1.1),
-                  child: const MyBarrier(size: 200.0, color: Colors.pink),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: 15,
-            color: Colors.green,
-          ),
-          Expanded(
-              child: Container(
-            color: Colors.brown,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "SCORE",
-                      style: TextStyle(color: Colors.white, fontSize: 25),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text("$score",
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 35)),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("BEST",
-                        style: TextStyle(color: Colors.white, fontSize: 25)),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text("$bestScore",
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 35)),
-                  ],
-                ),
-              ],
-            ),
-          ))
-        ]),
-      ),
-    );
+        onTap: () {
+          if (gameHasStarted) {
+            player.setAsset('assets/mp3/jumping.mp3');
+            player.play();
+            jump();
+          } else {
+            player.setAsset('assets/mp3/jumping.mp3');
+            player.play();
+            startGame();
+          }
+        },
+        child: Game(
+          birdYaxis: birdYaxis,
+          gameHasStarted: gameHasStarted,
+          barrierXone: barrierXone,
+          barrierXtwo: barrierXtwo,
+          barrierXthree: barrierXthree,
+          barrierXfour: barrierXfour,
+          score: score,
+          bestScore: bestScore,
+        ));
   }
 }
