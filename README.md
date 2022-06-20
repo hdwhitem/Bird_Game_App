@@ -1,4 +1,4 @@
-# game_bird_app
+# bird_game_app
 
 A new Flutter project.
 
