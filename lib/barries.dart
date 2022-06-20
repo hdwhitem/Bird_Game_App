@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class MyBarrier extends StatelessWidget {
   final double size;
+  final Color color;
 
-  const MyBarrier({Key? key, required this.size}) : super(key: key);
+  const MyBarrier({Key? key, required this.size, required this.color})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,7 @@ class MyBarrier extends StatelessWidget {
         color: Colors.green,
         border: Border.all(
           width: 7,
-          color: Colors.green[800] as Color,
+          color: color,
         ),
         borderRadius: BorderRadius.circular(10),
       ),
